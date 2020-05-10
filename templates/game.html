@@ -67,7 +67,7 @@
                 <tr>
                     {% for j in range(3) %}
                         <td>
-                            {% if game[i][j] %}
+                            {% if game[i][j] != 0 %}
                                 {% if game[i][j] == 1 %}
                                     X
                                 {% elif game[i][j] == -1 %}
@@ -89,7 +89,7 @@
             {% endfor %}
         </table>
         <a href="/reset">
-            {% if not score or score != 0 %}
+            {% if score == None or score != 0 %}
                 Reset the game
             {% else %}
                 Play again

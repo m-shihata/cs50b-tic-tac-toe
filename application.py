@@ -1,7 +1,7 @@
 from flask import Flask, render_template, session, redirect
 from flask_session import Session 
 from tempfile import mkdtemp
-from helpers import score
+from helpers import Score
 
 app = Flask(__name__)
 
@@ -14,11 +14,11 @@ Session(app)
 @app.route("/")
 def index():
 
-    Score = None
+    score = None
 
     # New session
     if "board" not in session:
-        session["board"] = [[None, None, None], [None, None, None], [None, None, None]]
+        session["board"] = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
         session["turn"] = 1
         session["count"] = 0
 

@@ -39,7 +39,7 @@ def minimax(game, turn, count):
 
     for row in game:
         for col in row:
-            if game[row][col] != None:
+            if game[row][col] != 0:
                 moves.append((row, col))
 
     if turn is 1:
