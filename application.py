@@ -66,3 +66,5 @@ def play(row, col):
 def reset():
     session.clear()
     return redirect("/")
+
+some new feature
