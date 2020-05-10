@@ -48,33 +48,48 @@
     </head>
     <body>
         <div class="flash">
-            {% if winner != None %}
-                {{ winner }} is the winner
-            {% elif is_tie %}
-                Tie 
+            {% if score == 1 %}
+                Winner is X
+            {% elif score == -1 %}
+                Winner is O
+            {% elif score == 0 %}
+                Tie
             {% else %}
-                {{ turn }} turn
+                {% if turn == 1 %}
+                    X turn
+                {% elif turn == -1 %}
+                    O turn
+                {% endif %}
             {% endif %}
         </div>
         <table>
             {% for i in range(3) %}
                 <tr>
                     {% for j in range(3) %}
-                        {% if game[i][j] %}
-                            <td>{{ game[i][j] }}</td>
-                        {% else %}
-                            <td>
-                                {% if not winner %}
-                                    <a href="/play/{{ i }}/{{ j }}">{{ turn }}</a>
+                        <td>
+                            {% if game[i][j] %}
+                                {% if game[i][j] == 1 %}
+                                    X
+                                {% elif game[i][j] == -1 %}
+                                    O
                                 {% endif %}
-                            </td>
-                        {% endif %}
+                            
+                            {% else %}
+                                <a href="/play/{{ i }}/{{ j }}">
+                                    {% if turn == 1 %}
+                                        X
+                                    {% elif turn == -1 %}
+                                        O
+                                    {% endif %}
+                                </a>
+                            {% endif %}
+                        </td>
                     {% endfor %}
                 </tr>
             {% endfor %}
         </table>
         <a href="/reset">
-            {% if not winner and not is_tie %}
+            {% if not score or score != 0 %}
                 Reset the game
             {% else %}
                 Play again
