@@ -24,7 +24,7 @@ def index():
 
     # Continue until Winner or Tie 
     else:
-        Score = Score(session["board"], session["turn"], session["count"])
+        score = Score(session["board"], session["turn"], session["count"])
 
     return render_template("game.html", game=session["board"], turn=session["turn"], score=score)
 
