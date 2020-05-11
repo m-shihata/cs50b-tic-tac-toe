@@ -42,12 +42,9 @@ def available_moves(game):
 
 def minimax(game, turn, count):
 
-    temp_game = game
-
     # Base case to return if game is over 
-    score = Score(game, turn, count)
-    if score != None:
-        return score
+    if Score(game, turn, count) != None:
+        return Score(game, turn, count)
     
     # Available moves
     moves = available_moves(game)
@@ -57,7 +54,7 @@ def minimax(game, turn, count):
     if turn is 1:
         value = -inf
         for move in moves:
-            temp_game[move[0]][move[1]] = 1
+            game[move[0]][move[1]] = 1
             count += 1
             value = max(value, minimax(game, -1, count)) 
 
@@ -65,7 +62,7 @@ def minimax(game, turn, count):
     else:
         value = inf
         for move in moves:
-            temp_game[move[0]][move[1]] = -1
+            game[move[0]][move[1]] = -1
             count += 1
             value = min(value, minimax(game, 1, count))
 
@@ -73,12 +70,7 @@ def minimax(game, turn, count):
     return value
 
 
-def Best_move(game, turn, count):
-
-    temp_game = game
-
-    # Available moves
-    moves = available_moves(game)
+def Scores(moves, game, turn, count):
 
     # Scores of every a vailable move
     scores = [[None, None, None], [None, None, None], [None, None, None]]
@@ -90,10 +82,20 @@ def Best_move(game, turn, count):
             if (row, col) in moves:
 
                 # Play the move 
-                temp_game[row][col] = turn
+                game[row][col] = turn
 
                 # Record this move score    
-                scores[row][col] = minimax(temp_game, turn, count)
+                scores[row][col] = minimax(game, turn, count)  
+    return scores  
+
+
+def Best_move(game, turn, count):
+
+    # Available moves
+    moves = available_moves(game)
+
+    # Score for each available move
+    scores = Score(moves, game, turn, count)
 
     # If X turn play first available move with score 1
     if turn == 1:
