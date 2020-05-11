@@ -1,22 +1,23 @@
 from math import inf
+from copy import deepcopy
 
 
-def Score(board, turn, count):
+def Score(game, turn, count):
 
     # declare variables
-    b = board
+    g = game
     t = -turn
 
     # rows
-    if (b[0][0] == b[0][1] == b[0][2] == t) or (b[1][0] == b[1][1] == b[1][2] == t) or (b[2][0] == b[2][1] == b[2][2] == t):
+    if (g[0][0] == g[0][1] == g[0][2] == t) or (g[1][0] == g[1][1] == g[1][2] == t) or (g[2][0] == g[2][1] == g[2][2] == t):
         return t
 
     # cols
-    elif (b[0][0] == b[1][0] == b[2][0] == t) or (b[0][1] == b[1][1] == b[2][1] == t) or (b[0][2] == b[1][2] == b[2][2] == t):
+    elif (g[0][0] == g[1][0] == g[2][0] == t) or (g[0][1] == g[1][1] == g[2][1] == t) or (g[0][2] == g[1][2] == g[2][2] == t):
         return t        
 
     # diags
-    elif (b[0][0] == b[1][1] == b[2][2] == t) or (b[0][2] == b[1][1] == b[2][0] == t):
+    elif (g[0][0] == g[1][1] == g[2][2] == t) or (g[0][2] == g[1][1] == g[2][0] == t):
         return t
 
     # tie
@@ -44,48 +45,75 @@ def minimax(game, turn, count):
 
     # Base case to return if game is over 
     if Score(game, turn, count) != None:
-        return Score(game, turn, count)
-    
+        return Score(game, turn, count)  
+
     # Available moves
     moves = available_moves(game)
     value = 0
 
-    # In X turn
+    # X turn
     if turn is 1:
         value = -inf
         for move in moves:
-            game[move[0]][move[1]] = 1
-            count += 1
-            value = max(value, minimax(game, -1, count)) 
 
-    # In O turn
+            game[move[0]][move[1]] = turn
+            count += 1
+            turn *= -1
+
+            value = max(value, minimax(game, turn, count)) 
+
+            game[move[0]][move[1]] = 0
+            count -= 1
+            turn *= -1
+
+    # O turn
     else:
         value = inf
         for move in moves:
-            game[move[0]][move[1]] = -1
+
+            game[move[0]][move[1]] = turn           
             count += 1
-            value = min(value, minimax(game, 1, count))
+            turn *= -1
+
+            value = min(value, minimax(game, turn, count))
+    
+            game[move[0]][move[1]] = 0
+            count -= 1
+            turn *= -1
 
     # Return index value
     return value
 
 
-def Scores(moves, game, turn, count):
+def Scores(game, turn, count):
+
+    # available moves
+    moves = available_moves(game)
 
     # Scores of every a vailable move
     scores = [[None, None, None], [None, None, None], [None, None, None]]
 
+    # Try and error solution
     for row in range(3):
+
         for col in range(3):
 
-            # check if 
+            # check if the move is availble
             if (row, col) in moves:
 
-                # Play the move 
+                # Play the current move 
                 game[row][col] = turn
+                count += 1
+                turn *= -1
 
                 # Record this move score    
                 scores[row][col] = minimax(game, turn, count)  
+
+                # Undo the last move for a new round   
+                game[row][col] = 0
+                count -= 1 
+                turn *= -1
+
     return scores  
 
 
@@ -95,23 +123,26 @@ def Best_move(game, turn, count):
     moves = available_moves(game)
 
     # Score for each available move
-    scores = Score(moves, game, turn, count)
+    scores = Scores(game, turn, count)
 
-    # If X turn play first available move with score 1
-    if turn == 1:
-        for row in range(3):
-            for col in range(3):
-                if scores[row][col] == 1:
-                    return (row, col)
+    # Iterage over every score to decide which fits more 
+    for row in range(3):
 
-    # If O turn play any available move with score -1
-    elif turn == -1:
-        for row in range(3):
-            for col in range(3):
-                if scores[row][col] == -1:
-                    return (row, col)
+        for col in range(3):
+            
+            if (row, col) in moves:
+                
+                # If X turn play first available move with score 1
+                if turn == 1:
+                    if scores[row][col] == 1:
+                        return (row, col)
 
-    # else play any available move with score 0
+                # If O turn play any available move with score -1
+                elif turn == -1:
+                    if scores[row][col] == -1:
+                        return (row, col)
+
+    # If all scores iterated and no one return win move return a tie move 
     for row in range(3):
         for col in range(3):
             if scores[row][col] == 0:

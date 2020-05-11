@@ -2,6 +2,8 @@ from flask import Flask, render_template, session, redirect
 from flask_session import Session 
 from tempfile import mkdtemp
 from helpers import Score, Best_move
+from copy import deepcopy
+
 
 app = Flask(__name__)
 
@@ -53,11 +55,11 @@ def reset():
 @app.route("/play")
 def play_computer():
 
-    # Temporary game 
-    temp_game = session["board"]
-    
+    # clone the board to create a safe area for figuring things out 
+    game = deepcopy(session["board"]) 
+
     # Find the best move
-    best_move = Best_move(temp_game, session["turn"], session["count"])
+    move = Best_move(game, session["turn"], session["count"])
 
     # Play it 
-    return redirect(f"play/{best_move[0]}/{best_move[1]}")
+    return redirect(f"play/{move[0]}/{move[1]}")
