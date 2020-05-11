@@ -1,7 +1,7 @@
 from flask import Flask, render_template, session, redirect
 from flask_session import Session 
 from tempfile import mkdtemp
-from helpers import Score
+from helpers import Score, Best_move
 
 app = Flask(__name__)
 
@@ -44,10 +44,20 @@ def play(row, col):
 
 @app.route("/reset")
 def reset():
+
+    # Reset game to square 0
     session.clear()
     return redirect("/")
 
 
 @app.route("/play")
 def play_computer():
-    pass
+
+    # Temporary game 
+    temp_game = session["board"]
+    
+    # Find the best move
+    best_move = Best_move(temp_game, session["turn"], session["count"])
+
+    # Play it 
+    return redirect(f"play/{best_move[0]}/{best_move[1]}")

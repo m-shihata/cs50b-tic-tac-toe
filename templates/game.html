@@ -15,8 +15,12 @@
             }
             
             table, td {
-                border: 2px solid grey;
+                border: 1px solid rgb(196, 196, 196);
                 border-collapse: collapse;
+            }
+
+            table {
+                box-shadow: 0 .125rem .25rem rgba(0,0,0,.075);
             }
 
             td, td > a {
@@ -73,8 +77,7 @@
                                 {% elif game[i][j] == -1 %}
                                     O
                                 {% endif %}
-                            
-                            {% else %}
+                            {% elif score == None %}
                                 <a href="/play/{{ i }}/{{ j }}">
                                     {% if turn == 1 %}
                                         X
@@ -88,12 +91,13 @@
                 </tr>
             {% endfor %}
         </table>
-        <a href="/reset">
-            {% if score == None or score != 0 %}
-                Reset the game
+        
+            {% if score == None%}
+                <a href="/reset">Reset the game</a>
+                <a href="/play">Make computer play next move</a>
             {% else %}
-                Play again
+                <a href="/reset">Play again</a>             
             {% endif %}
-        </a>
+        
     </body>
 </html>
