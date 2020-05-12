@@ -123,9 +123,6 @@ def scores(game, turn, count):
 
 def best_move(game, turn, count):
 
-    # Score for each available move
-    s = scores(game, turn, count)
-
     # Best moves
     moves = []
 
@@ -137,6 +134,9 @@ def best_move(game, turn, count):
                 moves.append((i, j))
 
         return choice(moves)
+
+    # Score for each available move
+    s = scores(game, turn, count)
 
     # Winning moves
     for i in range(3):
