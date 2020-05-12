@@ -2,56 +2,11 @@
 <html>
     <head>
         <title>Tic-Tac-Toe</title>
-        <style>
-            body {
-                margin: 0;
-                height: 100vh;
-                width: 100vw;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                font-family: Arial, Helvetica, sans-serif;
-            }
-            
-            table, td {
-                border: 1px solid rgb(196, 196, 196);
-                border-collapse: collapse;
-            }
-
-            table {
-                box-shadow: 0 .125rem .25rem rgba(0,0,0,.075);
-            }
-
-            td, td > a {
-                font-size: 100px;
-                height: 150px;
-                width: 150px;
-                text-align: center;                
-            }
-
-            td > a {
-                text-decoration: none;
-                color: rgb(255, 255, 255);
-                margin: 0px;
-            }
-
-            td > a:hover {
-                color: rgb(218, 218, 218);
-            }
-
-            body > a {
-                margin-top: 10px;
-            }
-
-            .flash {
-                margin-bottom: 10px;
-                height: 20px;
-            }
-        </style>
+        <link href="/static/styles.css" rel="stylesheet">
     </head>
     <body>
-        <div class="flash">
+        <h1>Tic-Tac-Toe</h1>
+        <div class="center">
             {% if score == 1 %}
                 Winner is X
             {% elif score == -1 %}
@@ -91,13 +46,15 @@
                 </tr>
             {% endfor %}
         </table>
-        
-            {% if score == None%}
-                <a href="/reset">Reset the game</a>
-                <a href="/play">Make computer play next move</a>
+        <div >
+            {% if score == None %}
+            <a class="mr" href="/play">Play next move</a>
+            <a class="mr" href="{% if count > 0 %}/undo{% endif %}">Undo last move</a>
+            <a  href="/reset">Reset the game</a>
+                
             {% else %}
                 <a href="/reset">Play again</a>             
             {% endif %}
-        
+        </div>
     </body>
 </html>

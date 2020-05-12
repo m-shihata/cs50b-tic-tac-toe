@@ -1,9 +1,7 @@
 from flask import Flask, render_template, session, redirect
 from flask_session import Session 
 from tempfile import mkdtemp
-from helpers import Score, Best_move
-from copy import deepcopy
-
+from helpers import score, best_move
 
 app = Flask(__name__)
 
@@ -16,19 +14,20 @@ Session(app)
 @app.route("/")
 def index():
 
-    score = None
+    s = None
 
     # New session
     if "board" not in session:
         session["board"] = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
         session["turn"] = 1
         session["count"] = 0
+        session["stack"] = []
 
     # Continue until Winner or Tie 
     else:
-        score = Score(session["board"], session["turn"], session["count"])
+        s = score(session["board"], session["turn"], session["count"])
 
-    return render_template("game.html", game=session["board"], turn=session["turn"], score=score)
+    return render_template("game.html", game=session["board"], turn=session["turn"], score=s, count=session["count"])
 
 
 @app.route("/play/<int:row>/<int:col>")
@@ -37,6 +36,21 @@ def play(row, col):
     # play
     session["board"][row][col] = session["turn"]
     session["count"] += 1
+    session["stack"].append((row, col))
+
+    # swich players 
+    session["turn"] *= -1
+
+    return redirect("/")
+
+
+@app.route("/undo")
+def undo():
+
+    # Undo
+    last_move = session["stack"].pop()
+    session["board"][last_move[0]][last_move[1]] = 0
+    session["count"] -= 1
 
     # swich players 
     session["turn"] *= -1
@@ -56,10 +70,23 @@ def reset():
 def play_computer():
 
     # clone the board to create a safe area for figuring things out 
-    game = deepcopy(session["board"]) 
+    game = session["board"] 
 
     # Find the best move
-    move = Best_move(game, session["turn"], session["count"])
+    m = best_move(game, session["turn"], session["count"])
 
     # Play it 
-    return redirect(f"play/{move[0]}/{move[1]}")
+    return redirect(f"play/{m[0]}/{m[1]}")
+
+
+@app.route("/auto")
+def auto():
+
+    # clone the board to create a safe area for figuring things out 
+    game = session["board"] 
+
+    # Find the best move
+    m = best_move(game, session["turn"], session["count"])
+
+    # Play it 
+    return redirect(f"play/{m[0]}/{m[1]}")
