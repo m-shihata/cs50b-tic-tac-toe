@@ -1,12 +1,71 @@
 <!DOCTYPE html>
-<html>
+<html class="d-flex justify-content-center align-items-center">
     <head>
         <title>Tic-Tac-Toe</title>
-        <link href="/static/styles.css" rel="stylesheet">
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+        <style>
+            html, body {
+                width: 100vw;
+                height: 100vh;
+            }
+            table, td {
+                border: 2px solid rgb(223, 220, 220);
+                border-collapse: collapse;
+                overflow: none;
+            }
+
+            td > a {
+                text-decoration: none !important;
+                color: rgb(255, 255, 255);
+            }
+            
+            td > a:hover {
+                color: rgb(218, 218, 218);
+            }
+
+
+
+            @media (min-width: 500px) {
+                td, td > a {
+                    font-size: 100px; 
+                    width: 150px; 
+                    height: 150px;
+                }
+
+                td > a {
+                    padding-left: 2rem;
+                    padding-right: 2rem;
+                }
+
+                #controller {
+                    max-width: 450px;
+                }
+            }
+
+            @media (max-width: 499px) {
+                td, td > a {
+                    font-size: 50px; 
+                    width: 80px; 
+                    height: 80px;
+                }
+
+                td > a {
+                    padding-left: 1rem;
+                    padding-right: 1rem;
+                    
+                }
+
+                #controller {
+                    max-width: 240px;
+                }
+            }
+        </style>
     </head>
-    <body>
-        <h1>Tic-Tac-Toe</h1>
-        <div>
+    <body class="d-flex flex-column justify-content-center align-items-center">
+        <h1 >Tic-Tac-Toe</h1>
+        <div class="my-2">
             {% if score == 1 %}
                 Winner is X
             {% elif score == -1 %}
@@ -21,11 +80,12 @@
                 {% endif %}
             {% endif %}
         </div>
-        <table>
+        <table class="d-flex flex-column my-2 shadow-sm p-0">
             {% for i in range(3) %}
-                <tr>
+                <tr class="d-flex">
                     {% for j in range(3) %}
-                        <td>
+                        <td class="text-center p-0">
+
                             {% if game[i][j] != 0 %}
                                 {% if game[i][j] == 1 %}
                                     X
@@ -46,14 +106,14 @@
                 </tr>
             {% endfor %}
         </table>
-        <div >
+        <div id="controller" class="d-flex flex-wrap justify-content-center">
             {% if score == None %}
-            <a class="mr" href="/play">Play next move</a>
-            <a class="mr" href="{% if count > 0 %}/undo{% endif %}">Undo last move</a>
-            <a  href="/reset">Reset the game</a>
+            <a class="my-2 mx-2" href="/play">Play next move</a>
+            <a class="my-2 mx-2" href="{% if count > 0 %}/undo{% endif %}">Undo last move</a>
+            <a class="my-2 mx-2" href="/reset">Reset the game</a>
                 
             {% else %}
-                <a href="/reset">Play again</a>             
+                <a class="my-2 mx-2" href="/reset">Play again</a>             
             {% endif %}
         </div>
     </body>
