@@ -1,15 +1,39 @@
+import os
 from flask import Flask, render_template, session, redirect
-from flask_session import Session 
-from tempfile import mkdtemp
 from helpers import score, best_move
+from flask_session import Session
+import pylibmc
 
 app = Flask(__name__)
 
-app.config["SESSION_FILE_DIR"] = mkdtemp()
-app.config["SESSION_PERMANENT"] = False
-app.config["SESSION_TYPE"] = "filesystem"
-Session(app)
+servers = os.environ.get('MEMCACHIER_SERVERS').split(',')
+username = os.environ.get('MEMCACHIER_USERNAME')
+passwd = os.environ.get('MEMCACHIER_PASSWORD')
 
+app.config.from_mapping(
+    SESSION_TYPE = 'memcached',
+    SESSION_MEMCACHED =
+        pylibmc.Client(servers, binary=True,
+                       username=username, password=passwd,
+                       behaviors={
+                            # Faster IO
+                            'tcp_nodelay': True,
+                            # Keep connection alive
+                            'tcp_keepalive': True,
+                            # Timeout for set/get requests
+                            'connect_timeout': 2000, # ms
+                            'send_timeout': 750 * 1000, # us
+                            'receive_timeout': 750 * 1000, # us
+                            '_poll_timeout': 2000, # ms
+                            # Better failover
+                            'ketama': True,
+                            'remove_failed': 1,
+                            'retry_timeout': 2,
+                            'dead_timeout': 30,
+                       })
+)
+
+Session(app)
 
 @app.route("/")
 def index():
